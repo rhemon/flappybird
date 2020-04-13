@@ -1,5 +1,4 @@
 # Flappy Bird
-=============
 
 ## Start How-To(s)
 
