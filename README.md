@@ -26,21 +26,28 @@ $ python generation.py
 ## File Descritions
 
 #### bird.py
-------------
+
 Contains Bird, Chromosome and BirdWithGenes class.
 Bird class is used for the simple game. Where BirdWithGenes used in the genetic algorithm version where it uses Chromosome which basically holds the neural network
 weights and functions to calculate the decision.
 
+------------------------------------------------------------------------------------
+
 #### obstacles.py
------------------
+
 Contains Obstacle class. Prepares and handles the obstacles of the game.
 Here each obstacle are simply the boxes that leave a small gap inbetween.
 
+------------------------------------------------------------------------------------
+
 #### game.py
-------------
+
 Contains the game class that handles the game loop and states.
 
+------------------------------------------------------------------------------------
+
 #### generation.py
-------------------
+
 Handles the loop to train the bird ai through genetic algorithm.
 
+------------------------------------------------------------------------------------
