@@ -27,7 +27,7 @@ class Game:
         pygame.init()
         self.display = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         self.display.fill((0,255,0))
-          
+        self.jumped = False
         # intialise obstacles 
         self.obstacles = [Obstacle(self.WIDTH, self.HEIGHT, 400)]
         for i in range(1, 10):
@@ -78,7 +78,7 @@ class Game:
             if each.collison_checker(bx, by, bw, bh):
                 game = False
             if each.just_passed(bx):
-                self.score += 1
+                self.bird.inc_score()
         
         if not game:
             self.bird.set_alive(False)
@@ -108,7 +108,6 @@ class Game:
                 self.jumped = False
     
     def end_game(self):
-        
         pygame.quit()
         sys.exit()
 
@@ -118,10 +117,9 @@ class Game:
         self.display.fill((0,255,0))
         
         self.obstacles_update()
-        
-        game = self.bird_update()
-        
         self.obstacles_draw()
+
+        game = self.bird_update()
         self.bird_draw()
 
             

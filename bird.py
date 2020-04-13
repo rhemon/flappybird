@@ -13,7 +13,7 @@ class Bird:
         self.Y = pos[1]
         self.rect = Rect(self.X, self.Y, self.WIDTH, self.HEIGHT)
         self.up_X = 0
-        self.moveBy = -7
+        self.moveBy = 7
         self.alive = True
         self.score = 0
         self.moves = 0
