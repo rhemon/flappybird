@@ -23,7 +23,7 @@ $ python game.py
 $ python generation.py
 ```
 
-## File Descritions
+## File Descriptions
 
 #### bird.py
 
