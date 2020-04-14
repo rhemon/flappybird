@@ -27,15 +27,17 @@ class Obstacle:
     """
 
     # WIDTH OF BOXES OF OBSTACLE
-    WIDTH = 50
+    WIDTH = 40
 
     # VERITCAL GAP BETWEEN TWO BOXES OF AN OBSTACLE
-    MIN_GAP = 60
-    MAX_GAP = 100
+    MIN_GAP = 100
+    MAX_GAP = 120
 
     # HORIZONTAL SPACE BETWEEN TWO OBSTACLES
-    MIN_SPACE = 190
+    MIN_SPACE = 230
     MAX_SPACE = 230
+
+    SPEED = 7
 
     def __init__(self, WIN_WIDTH, WIN_HEIGHT, prev_X):
         """
@@ -63,12 +65,18 @@ class Obstacle:
         
         # Based on previous prev_X, select a X point at a random distance between MIN to MAX SPACE
         self.X = round(rand() * (self.MAX_SPACE - self.MIN_SPACE)) + self.MIN_SPACE + prev_X
+
+        self.init_X = self.X
         
         # Initial rectangles for obstacle
         self.r1 = Rect(self.X, 0, self.WIDTH, self.height1)
         self.r2 = Rect(self.X, self.WIN_HEIGHT-self.height2, self.WIDTH, self.height2)
 
         self.passed = False
+
+    def reset_X(self):
+        self.X = self.init_X
+        self.update_rects()
 
     def get_rects(self):
         return (self.r1, self.r2)
@@ -77,7 +85,7 @@ class Obstacle:
         return self.X
     
     def dec_X(self):
-        self.X -= 5
+        self.X -= self.SPEED
         self.update_rects()
 
     def update_rects(self):

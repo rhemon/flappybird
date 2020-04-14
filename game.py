@@ -111,17 +111,22 @@ class Game:
         pygame.quit()
         sys.exit()
 
+    def status_draw(self):
+        return
+
     def play(self):
         self.event_check()
 
         self.display.fill((0,255,0))
         
+
         self.obstacles_update()
         self.obstacles_draw()
 
         game = self.bird_update()
         self.bird_draw()
 
+        self.status_draw()
             
         pygame.display.update()
         # pygame.display.flip()
