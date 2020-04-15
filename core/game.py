@@ -52,9 +52,9 @@ class Game:
 
         self.jumped = False
         # intialise obstacles 
-        self.obstacles = [Obstacle(self.WIDTH, self.HEIGHT, 400)]
+        self.obstacles = [Obstacle(self.WIDTH, self.HEIGHT)]
         for i in range(1, 10):
-            self.obstacles.append(Obstacle(self.WIDTH, self.HEIGHT, self.obstacles[i-1].get_X()))
+            self.obstacles.append(Obstacle(self.WIDTH, self.HEIGHT, self.obstacles[i-1]))
         
         self.bird = Bird((50, 195))
 
@@ -88,7 +88,7 @@ class Game:
                 i -= 1
             
         for i in range(len(self.obstacles), 10):
-            self.obstacles.append(Obstacle(self.WIDTH, self.HEIGHT, self.obstacles[i-1].get_X()))
+            self.obstacles.append(Obstacle(self.WIDTH, self.HEIGHT, self.obstacles[i-1]))
 
     def get_state(self):
         """
@@ -106,7 +106,7 @@ class Game:
                 dist = np.sqrt((x_end-x_start_2)**2 + (y_mid-y_mid_2)**2)
                 state.append(x_end)
                 state.append(y_mid)
-                state.append(dist)
+                # state.append(dist)
                 break
         return state
 

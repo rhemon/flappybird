@@ -190,9 +190,9 @@ class GeneticTrainer(Game):
         Reset obstacle for the new generation.
         """
 
-        self.obstacles = [Obstacle(self.WIDTH, self.HEIGHT, 400)]
+        self.obstacles = [Obstacle(self.WIDTH, self.HEIGHT)]
         for i in range(1, 10):
-            self.obstacles.append(Obstacle(self.WIDTH, self.HEIGHT, self.obstacles[i-1].get_X()))
+            self.obstacles.append(Obstacle(self.WIDTH, self.HEIGHT, self.obstacles[i-1]))
 
     def end_game(self):
         """

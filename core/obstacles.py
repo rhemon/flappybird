@@ -11,6 +11,7 @@ between which the bird must pass through.
 
 from random import random as rand
 
+import numpy as np
 from pygame import Rect
 
 
@@ -40,33 +41,43 @@ class Obstacle:
 
     SPEED = 7
 
-    def __init__(self, WIN_WIDTH, WIN_HEIGHT, prev_X):
+    def __init__(self, WIN_WIDTH, WIN_HEIGHT, prev_obs=None):
         """
         Initialise x,y co-ordinates for the obstacle boxes.
-        
-        :param WIN_HEIGHT:      Height of game window
-        :param prev_X:          Previous obstacle's X-coordinate
         """
+
+        if prev_obs:
+            prev_X = prev_obs.get_X()
+            prev_Y = prev_obs.get_Y_Midpoint()
+        else:
+            prev_X = 400
         
         self.WIN_WIDTH = WIN_WIDTH
         self.WIN_HEIGHT = WIN_HEIGHT
+        while True:
+            self.height1 = round(rand() * (WIN_HEIGHT - self.MIN_GAP))
+            
+            # If height1 is big enough then second box not needed. 
+            # otherwise create a second box height that will at least
+            # leave a gap no more than MAX_GAP
+            if (self.height1 > WIN_HEIGHT - self.MAX_GAP):
+                self.height2 = 0
+            else:
+                self.height2 = round(rand() * (WIN_HEIGHT - self.MIN_GAP - self.height1))
+                if (WIN_HEIGHT - self.height1 - self.height2 > self.MAX_GAP):
+                    self.height2 += WIN_HEIGHT - self.height1 - self.height2 - self.MAX_GAP
+            
+            # Based on previous prev_X, select a X point at a random distance between MIN to MAX SPACE
+            self.X = round(rand() * (self.MAX_SPACE - self.MIN_SPACE)) + self.MIN_SPACE + prev_X
 
-        # Random height between 0 to WINDOWWIN_HEIGHT_HEIGHT - MIN_GAP
-        self.height1 = round(rand() * (WIN_HEIGHT - self.MIN_GAP))
-        
-        # If height1 is big enough then second box not needed.
-        # otherwise create a second box height that will at least
-        # leave a gap no more than MAX_GAP
-        if (self.height1 > WIN_HEIGHT - self.MAX_GAP):
-            self.height2 = 0
-        else:
-            self.height2 = round(rand() * (WIN_HEIGHT - self.MIN_GAP - self.height1))
-            if (WIN_HEIGHT - self.height1 - self.height2 > self.MAX_GAP):
-                self.height2 += WIN_HEIGHT - self.height1 - self.height2 - self.MAX_GAP
-        
-        # Based on previous prev_X, select a X point at a random distance between MIN to MAX SPACE
-        self.X = round(rand() * (self.MAX_SPACE - self.MIN_SPACE)) + self.MIN_SPACE + prev_X
-
+            if (prev_obs):
+                x_dist = self.X - (prev_X + self.WIDTH)
+                y_mid = self.get_Y_Midpoint()-prev_Y
+                dist = np.sqrt(x_dist**2 + y_mid ** 2)
+                if (dist <= self.MIN_SPACE):
+                    break
+            else:
+                break
         self.init_X = self.X
         
         # Initial rectangles for obstacle

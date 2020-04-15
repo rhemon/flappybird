@@ -23,6 +23,8 @@ class Genes:
     genes.
     """
 
+    THRESHOLD = 0.6
+
     def __init__(self, weights=None):
         """
         If weights provided then use that
@@ -44,7 +46,7 @@ class Genes:
     def get_decision(self, state):
         """
         Forward calculate the output and decide whehter to jump or not.
-        Threshhold for jump is set 0.7
+        Uses threshold to determine it.
         """
 
         state = state.reshape(state.shape[0],1)
@@ -52,7 +54,7 @@ class Genes:
         l1 = 1 / (1 + np.exp(-l1)) 
         l2 = np.dot(self.w2, l1)
         out = 1 / (1 + np.exp(-l2))
-        if out[0] > 0.7:
+        if out[0] > self.THRESHOLD:
             return True
         return False
 
@@ -152,8 +154,8 @@ class GeneticBird(Bird):
         if so invokes jump
         """ 
 
-        state.append(self.Y)
-        if self.genes.get_decision(np.asarray(state)):
+        inp = [self.X, self.Y, abs(state[0] - ((self.X+self.X+self.WIDTH) // 2)), abs(state[1] - ((self.Y+self.Y+self.HEIGHT) // 2))]
+        if self.genes.get_decision(np.asarray(inp)):
             super().jump()
     
     def set_alive(self, alive):
@@ -183,10 +185,9 @@ class GeneticBird(Bird):
     def update_fitness_score(self, state):
         """
         Update fitness score
-        Fitness Score = Distance Travelled - Distance from next obstacle
-        Distance Travelled is basically the number of moves * obstacle speed 
-        Distance from next obstacle is the hypotenuse line from birds midpoint
-        to obstacle gap's midpoint vertically and horizontally end point. (ox_end, oy_mid)
+        Fitness Score = Distance Travelled - Distancce from bird + 100*score
+        Distance Travelled = Moves * Obstacle Speed
+        Distance from bird = Vertical Distance from Y midpoints + Horizontal distance of X midpoints
         """
 
         distance_travelled = self.moves * Obstacle.SPEED
@@ -194,9 +195,8 @@ class GeneticBird(Bird):
         by_midpoint = (self.Y + self.Y + self.HEIGHT) // 2
         x_dist = state[0] - bx_midpoint
         y_dist = state[1] - by_midpoint
-        dist = np.sqrt((x_dist ** 2) + (y_dist ** 2))
 
-        self.fitness_score = int(distance_travelled - dist)
+        self.fitness_score = int(distance_travelled - x_dist - y_dist) + (100 * self.score)
     
     def get_fitness_score(self):
         return self.fitness_score
