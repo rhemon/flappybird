@@ -41,7 +41,8 @@ class Genes:
             self.w1 = np.random.random((8, 4))
             self.w2 = np.random.random((1, 8))
             self.bias1 = np.random.uniform()
-            # self.bias2 = np.random.uniform()
+            # self.bias2 = np.random.uniform()#
+            self.mutate()
     
     def get_decision(self, state):
         """
@@ -154,7 +155,7 @@ class GeneticBird(Bird):
         if so invokes jump
         """ 
 
-        inp = [self.X, self.Y, abs(state[0] - ((self.X+self.X+self.WIDTH) // 2)), abs(state[1] - ((self.Y+self.Y+self.HEIGHT) // 2))]
+        inp = [self.X, self.Y, (state[0] - ((self.X+self.X+self.WIDTH) // 2)), (state[1] - ((self.Y+self.Y+self.HEIGHT) // 2))]
         if self.genes.get_decision(np.asarray(inp)):
             super().jump()
     

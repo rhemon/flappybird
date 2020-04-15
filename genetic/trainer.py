@@ -47,6 +47,7 @@ class GeneticTrainer(Game):
         self.raw_score = 0
         self.generation = 1
         self.bird = None
+        self.score = 0
         self.alive = population_size
 
     def load_opt_weights(self, population_size):
@@ -95,6 +96,7 @@ class GeneticTrainer(Game):
         self.add_status_label('Fitness: ' + str((self.birds)[-1].get_fitness_score()), 30)
         self.add_status_label('Alive: ' + str(self.alive), 40)
         self.add_status_label('Best Score: ' + str(self.raw_score), 50)
+        self.add_status_label('Score: ' + str(self.score), 60)
         
     def bird_update(self):
         """
@@ -160,8 +162,8 @@ class GeneticTrainer(Game):
             self.best_bird = self.birds[-1]
             self.update_opt_wieghts()
 
-        if self.birds[-1].get_score() > self.raw_score:
-            self.raw_score = self.birds[-1].get_score()
+        # if self.birds[-1].get_score() > self.raw_score:
+        #     self.raw_score = self.birds[-1].get_score()
 
         for i in range(1,11):
             self.alive += 1
@@ -182,6 +184,7 @@ class GeneticTrainer(Game):
         """
 
         game = super().play()
+        self.score = sorted(self.birds)[-1].get_score()
         if not game:
             self.do_selection()
         
@@ -202,4 +205,5 @@ class GeneticTrainer(Game):
         """
 
         self.generation += 1
+        self.raw_score = self.score if self.score > self.raw_score else self.raw_score
         print("Generation:", self.generation)

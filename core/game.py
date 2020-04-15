@@ -33,10 +33,10 @@ class Game:
     WHITE = (255, 255, 255)
     BLACK = (0, 0, 0)
 
-    BG_COLOR = GREEN 
-    TEXT_COLOR = WHITE
-    OBSTACLE_COLOR = RED
-    BIRD_COLOR = BLUE
+    BG_COLOR = WHITE 
+    TEXT_COLOR = BLACK
+    OBSTACLE_COLOR = (200, 200, 200)
+    BIRD_COLOR = (10, 230, 40)
     
     def __init__(self):
         """
@@ -95,6 +95,7 @@ class Game:
         Get state. Mainly provides the list for the input
         in training models.
         """
+        
         state = []
         for i in range(len(self.obstacles)):
             each = self.obstacles[i]
