@@ -1,16 +1,8 @@
-"""
-The main game file. That contains the Game class
-for starting the game window and looping over it.
-
-Maintains the object of the whole game.
-
-"""
-
 import pygame
 import sys
 from pygame.locals import *
-from obstacles import Obstacle
-from bird import Bird
+from core.obstacles import *
+from core.bird import *
 
 class Game:
     
@@ -54,10 +46,12 @@ class Game:
 
     def get_state(self):
         state = []
-        for each in self.obstacles[:1]:
-            state.append(each.get_X())
-            state.append(each.get_Y1())
-            state.append(each.get_Y2())
+        for each in self.obstacles:
+            if not each.did_pass():
+                state.append(each.get_X())
+                state.append(each.get_Y1())
+                state.append(each.get_Y2())
+                break
         return state
 
     def bird_draw(self):
@@ -141,9 +135,3 @@ class Game:
     def loop(self):
         while 1:     
             self.play()
-
-            
-
-if __name__ == "__main__":
-    g = Game()
-    g.loop()

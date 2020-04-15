@@ -116,7 +116,10 @@ class Obstacle:
             self.passed = True
             return True
         return False
-    
+
+    def did_pass(self):
+        return self.passed
+
     def get_Y1(self):
         return self.height1
     

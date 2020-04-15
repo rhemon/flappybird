@@ -27,8 +27,8 @@ $ python generation.py
 
 #### bird.py
 
-Contains Bird, Chromosome and BirdWithGenes class.
-Bird class is used for the simple game. Where BirdWithGenes used in the genetic algorithm version where it uses Chromosome which basically holds the neural network
+Contains Bird, Genes and GeneticBird class.
+Bird class is used for the simple game. Where GeneticBird used in the genetic algorithm version where it uses Genes which basically holds the neural network
 weights and functions to calculate the decision.
 
 ------------------------------------------------------------------------------------
