@@ -1,6 +1,7 @@
 # Flappy Bird
 
-## Start How-To(s)
+Start How-To(s)
+---
 
 ### 1. Playing game
 
@@ -17,7 +18,7 @@ $ source venv/bin/activate // venv\Scripts\activate if windows
 $ python start.py play
 ```
 
-### 2. Starting Training with Genetic Algorith
+### 2. Starting Training with Genetic Algorithm
 - With all packages installed, just run
 ```
 $ python start.py genetic
@@ -27,34 +28,35 @@ $ python start.py genetic
 $ python start.py genetic -r -s 100
 ```
 
-## File Descriptions
+File Descriptions
+---
 
-### core/
+### `core/`
 
-This folder mainly consist of all the models providing essential feature for the game.
+*This folder mainly consist of all the models providing essential feature for the game.*
 
-#### core/bird.py
+`core/bird.py`
 
 Contains Bird class. It contains the position and score information of the bird. Provides
 methods to let bird move and jump in the game.
 
-#### core/obstacles.py
+`core/obstacles.py`
 
 Contains Obstacle class. Prepares and handles the obstacles of the game.
 Here each obstacle are simply the boxes that leave a small gap inbetween.
 
-#### core/game.py
+`core/game.py`
 
 Contains the game class that handles the game loop and states.
 
 ------------------------------------------------------------------------------------
 
-### genetic
+### `genetic/`
 
-The folder containig extended classes of Game and Bird for making it suitable
-for genetic algorithm and letting bird learn to play the game.
+*The folder containig extended classes of Game and Bird for making it suitable
+for genetic algorithm and letting bird learn to play the game.*
 
-#### genetic/bird.py
+`genetic/bird.py`
 
 Provides Genes and GeneticBird class. Genes provide the basic functionality for
 the model that handles the weight and uses to get decision for the bird to jump
@@ -63,7 +65,7 @@ or not.
 The GeneticBird class uses a Genes object to determine jump and also
 uses a fitness score to compare between different birds.
 
-#### genetic/trainer.py
+`genetic/trainer.py`
 
 The GeneticTrainer class is used to loop over the game with the genetic birds
 and uses the concept of genetic algorithm to evolve the birds to learn to
