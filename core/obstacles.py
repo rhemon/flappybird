@@ -71,6 +71,8 @@ class Obstacle:
             self.X = round(rand() * (self.MAX_SPACE - self.MIN_SPACE)) + self.MIN_SPACE + prev_X
 
             if (prev_obs):
+                # Check if the distance between gap follows the min space
+                # to make sure a bird can actually cover the difference.
                 x_dist = self.X - (prev_X + self.WIDTH)
                 y_mid = self.get_Y_Midpoint()-prev_Y
                 dist = np.sqrt(x_dist**2 + y_mid ** 2)

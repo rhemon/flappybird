@@ -43,7 +43,7 @@ methods to let bird move and jump in the game.
 Contains Obstacle class. Prepares and handles the obstacles of the game.
 Here each obstacle are simply the boxes that leave a small gap inbetween.
 
-#### game.py
+#### core/game.py
 
 Contains the game class that handles the game loop and states.
 
