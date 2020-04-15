@@ -6,12 +6,13 @@ The obstacle here are the plain rectangle blocks. In
 between which the bird must pass through.
 
 @author Ridhwanul Haque
-@version 12/04/2020
+@version 12.04.2020
 """
 
 from random import random as rand
 
 from pygame import Rect
+
 
 class Obstacle:
     """
@@ -75,6 +76,10 @@ class Obstacle:
         self.passed = False
 
     def reset_X(self):
+        """
+        Reset X to initial position.
+        """
+
         self.X = self.init_X
         self.update_rects()
 
@@ -85,10 +90,19 @@ class Obstacle:
         return self.X
     
     def dec_X(self):
+        """
+        Decrement X.
+        Making it move left.
+        """
+        
         self.X -= self.SPEED
         self.update_rects()
 
     def update_rects(self):
+        """
+        Reset rect with updated X and Y cords.
+        """
+
         self.r1 = Rect(self.X, 0, self.WIDTH, self.height1)
         self.r2 = Rect(self.X, self.WIN_HEIGHT-self.height2, self.WIDTH, self.height2)
 
@@ -97,8 +111,8 @@ class Obstacle:
         Check if given position with width and height
         collide with the obstacle anywhere.
         If so returns True, otherwise False.
-
         """
+
         if x >= self.X and x <= self.X+self.WIDTH or (x+width) >= self.X and (x+width) <= self.X+self.WIDTH:
             if (self.height1 >= y or self.WIN_HEIGHT-self.height2 <= y+height):
                 return True
@@ -110,6 +124,7 @@ class Obstacle:
         If so, returns True else returns False.
         If position already passed then returns false.
         """
+        
         if self.passed:
             return False
         elif self.X+self.WIDTH < x:
@@ -125,3 +140,9 @@ class Obstacle:
     
     def get_Y2(self):
         return self.WIN_HEIGHT-self.height2
+
+    def get_Y_Midpoint(self):
+        return (self.get_Y1() + self.get_Y2()) // 2
+
+    def get_X_Midpoint(self):
+        return (self.get_X() + self.WIDTH + self.get_X()) // 2

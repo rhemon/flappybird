@@ -1,18 +1,41 @@
+"""
+This file provides the trainer class
+to run the game with population size
+that evolves and tries to learn to play the game
+using concepts of genetic algorithm.
+
+@author Ridhwanul Haque
+@version 15.04.2020
+"""
+
 import os
 import pygame
+
 from core.game import *
-from genetic.bird import *
 from core.obstacles import *
+from genetic.bird import *
 
 class GeneticTrainer(Game):
-
-    OPT_FILE_PATH = "genetic/weights/opt.npz"
+    """
+        Handles population and makes it loop over.
+        Does selection and invokes crossover and mutation for
+        new generations.
+        Saves optimum weights.
+        Allows to resume from best wieghts saved.
+    """
+    
+    OPT_FILE_PATH = "weights/genetic-opt.npz"
 
     def __init__(self, population_size=100, load_opt=False):
+        """
+            Initialise population related variables.
+            If load from the last optimum model, then load's
+            last weights from saved file.
+        """
+
         if population_size <= 0:
             raise Exception("Trainer population size must be a positive value.")
         super().__init__()
-        self.font_obj = pygame.font.Font('freesansbold.ttf', 13)
         
         if load_opt:
             self.load_opt_weights(population_size)
@@ -21,13 +44,17 @@ class GeneticTrainer(Game):
             self.best_score = None
             self.best_bird = None
             
-        
         self.raw_score = 0
         self.generation = 1
         self.bird = None
         self.alive = population_size
 
     def load_opt_weights(self, population_size):
+        """
+        Load weight of the best bird and then mutate the bird for the
+        remaining population size.
+        """
+
         weights = np.load(self.OPT_FILE_PATH)
         w1 = weights['w1']
         print(w1)
@@ -46,6 +73,11 @@ class GeneticTrainer(Game):
         self.best_bird = self.birds[0]
         
     def bird_draw(self):
+        """
+        Loop over all birds and draw each using superclass's draw
+        method.
+        """
+
         for each in self.birds:
             if not each.is_alive():
                 continue
@@ -54,31 +86,22 @@ class GeneticTrainer(Game):
             super().bird_draw()
     
     def status_draw(self):
-        gen_numb = self.font_obj.render('Generation: ' + str(self.generation), True, self.WHITE)
-        best_score = self.font_obj.render('Best Fitness: ' + str(self.best_score), True, self.WHITE)
-        cur_score = self.font_obj.render('Current Fitness: ' + str((self.birds)[-1].get_fitness_score()), True, self.WHITE)
-        alive_score = self.font_obj.render('Alive: ' + str(self.alive), True, self.WHITE)
-        raw_score = self.font_obj.render('Best Score: ' + str(self.raw_score), True, self.WHITE)
+        """
+        Display status information
+        """
 
-        gen_numb_rect = gen_numb.get_rect()
-        gen_numb_rect.center = (self.WIDTH-80, 20)
-        best_score_rect = best_score.get_rect()
-        best_score_rect.center = (self.WIDTH-80, 10)
-        cur_score_rect = cur_score.get_rect()
-        cur_score_rect.center = (self.WIDTH-80, 30)
-        alive_score_rect = alive_score.get_rect()
-        alive_score_rect.center = (self.WIDTH-80, 40)
-        raw_score_rect = raw_score.get_rect()
-        raw_score_rect.center = (self.WIDTH-80, 50)
-
-        self.display.blit(gen_numb, gen_numb_rect)
-        self.display.blit(best_score, best_score_rect)
-        self.display.blit(cur_score, cur_score_rect)
-        self.display.blit(alive_score, alive_score_rect)
-        self.display.blit(raw_score, raw_score_rect)
-
+        self.add_status_label('Best Fitness: ' + str(self.best_score), 10)
+        self.add_status_label('Generation: ' + str(self.generation), 20)
+        self.add_status_label('Fitness: ' + str((self.birds)[-1].get_fitness_score()), 30)
+        self.add_status_label('Alive: ' + str(self.alive), 40)
+        self.add_status_label('Best Score: ' + str(self.raw_score), 50)
         
     def bird_update(self):
+        """
+        For each bird in birds set them as self.bird
+        and use super class's bird udpate method to make it move.
+        """
+
         game = False
         i = 0
         count = 0
@@ -96,55 +119,87 @@ class GeneticTrainer(Game):
         return game
     
     def check_jump(self, event):
+        """
+        Overwrite superclass's check_jump method to avoid calling
+        jump on space bar press.
+        """
+
         return
 
     def update_opt_wieghts(self):
-        if (np.load(self.OPT_FILE_PATH)['best_score'].item() > self.best_score):
-            return 
-        os.remove(self.OPT_FILE_PATH)
+        """
+        Update local file with new optimum
+        weights.
+        """
+
+        try:
+            if (np.load(self.OPT_FILE_PATH)['best_score'].item() > self.best_score):
+                return
+            os.remove(self.OPT_FILE_PATH)
+        except FileNotFoundError:
+            pass
         np.savez(self.OPT_FILE_PATH, w1=self.best_bird.get_genes().get_w1(), 
                 w2=self.best_bird.get_genes().get_w2(), bias1=self.best_bird.get_genes().get_bias1(),
                 best_score=self.best_score)
-        print(np.load(self.OPT_FILE_PATH)['w1'])
-        print(self.best_bird.get_genes().get_w1())
 
-    def do_selection(self, game):
-        if not game:
-            self.birds = sorted(self.birds)
+    def do_selection(self):
+        """
+        End of the generation keep top 10 birds and 
+        replace remaining with offsprings of best bird
+        with 2nd to 4th best bird. 
+        """
 
-            if self.best_score == None:
-                self.best_score = self.birds[-1].get_fitness_score()
-                self.best_bird = self.birds[-1]
-            
-            if self.birds[-1].get_fitness_score() > self.best_score:
-                self.best_score = self.birds[-1].get_fitness_score()
-                self.best_bird = self.birds[-1]
-                self.update_opt_wieghts()
+        self.birds = sorted(self.birds)
 
-            if self.birds[-1].get_score() > self.raw_score:
-                self.raw_score = self.birds[-1].get_score()
+        if self.best_score == None:
+            self.best_score = self.birds[-1].get_fitness_score()
+            self.best_bird = self.birds[-1]
+        
+        if self.birds[-1].get_fitness_score() > self.best_score:
+            self.best_score = self.birds[-1].get_fitness_score()
+            self.best_bird = self.birds[-1]
+            self.update_opt_wieghts()
 
-            for i in range(1,11):
-                self.alive += 1
-                self.birds[len(self.birds)-i].set_alive(True)
+        if self.birds[-1].get_score() > self.raw_score:
+            self.raw_score = self.birds[-1].get_score()
 
-            for i in range(len(self.birds)-10):
-                self.alive += 1
-                ind = -int(np.random.rand()*3)-2
-                self.birds[i] = self.birds[-1].offspring(self.birds[ind])
+        for i in range(1,11):
+            self.alive += 1
+            self.birds[len(self.birds)-i].set_alive(True)
 
-            self.reset_obstacles()
-            print("best score", self.best_score)
+        for i in range(len(self.birds)-10):
+            self.alive += 1
+            ind = -int(np.random.rand()*3)-2
+            self.birds[i] = self.birds[-1].offspring(self.birds[ind])
+
+        self.reset_obstacles()
+        print("best score", self.best_score)
         
     def play(self):
+        """
+        Play a round.
+        If all birds die then do selection for new generaiton.
+        """
+
         game = super().play()
-        self.do_selection(game)
+        if not game:
+            self.do_selection()
         
     def reset_obstacles(self):
+        """
+        Reset obstacle for the new generation.
+        """
+
         self.obstacles = [Obstacle(self.WIDTH, self.HEIGHT, 400)]
         for i in range(1, 10):
             self.obstacles.append(Obstacle(self.WIDTH, self.HEIGHT, self.obstacles[i-1].get_X()))
 
     def end_game(self):
+        """
+        Increment the generation count.
+        Doesn't actually end the game. 
+        Used to mainly overwrite Game's end_game method.
+        """
+
         self.generation += 1
         print("Generation:", self.generation)

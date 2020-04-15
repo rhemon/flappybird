@@ -1,5 +1,26 @@
+"""
+File used to run the flappy bird game from the command line.
+
+Requires python3 with pygame and numpy installed.
+
+To run the game on normal play mode:
+You need to run
+$ pythoon start.py play
+
+To run the game on genetic algorithm to make the ai learn to play on its own run:
+$ python start.py genetic
+If you have previously run it or wanna continue on the given weights just use
+$ python start.py genetic -r
+If you wish to provide your own size 
+$ python start.py genetic -r -s 200
+
+@author Ridhwanul Haque
+@version 15.04.2020
+"""
+
 import getopt
 import sys
+
 from core.game import Game
 from genetic.trainer import *
 
@@ -36,6 +57,6 @@ if __name__ == "__main__":
             g = GeneticTrainer(size)
 
         g.loop()
-        
+
     else:
         raise  Exception("Unrecognised runtype. Valid optionos: play, genetic")
