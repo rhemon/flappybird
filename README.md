@@ -28,6 +28,16 @@ $ python start.py genetic
 $ python start.py genetic -r -s 100
 ```
 
+### 3. Starting Training with Supervised Neural Network
+- This part will require keras along with numpy and pygame, so make sure you had all requiremens installed.
+- Run:
+```
+$ python start.py supervised
+```
+This will first prompt the user to play a round first so that it can gather some initial data
+for training the neural network model.
+It then uses that to play a round, and after everyround with new collected data retrains the model.
+
 File Descriptions
 ---
 
@@ -79,6 +89,33 @@ uses a fitness score to compare between different birds.
 The `GeneticTrainer` class is used to loop over the game with the genetic birds
 and uses the concept of genetic algorithm to evolve the birds to learn to
 play the game.
+
+------------------------------------------------------------------------------------
+
+### `supervised/`
+
+*This folder contains extended classes for making the flappy bird AI learn to play
+the game using the concept of supervised machine learning. It uses the same
+neural network model as the genetic algorithm one, but here it tries to collect the
+interaction and train the model to learn to play the game.
+
+It first prompts the user to play the game, where it takes the input set and user's 
+action to label X and Y. In a case if user's decision led ot the bird crashing,
+it switches the label in that case.*
+
+`supervised/bird.py`
+
+This file contains the `Model` and `SupervisedBird` class. The `Model` class basically
+provides the methods to maintain the neural network model. `SupervisedBird` uses `Model`
+to decide whehter to jump or not, unlike `Bird` in the core game that uses user interaction.
+
+`supervised/trainer.py`
+
+This contains the `GameDataGen` and `SupervisedTrainer` class. `GameDataGen` extends game
+and adjusts to collect user data, and allows uer to play once only. `SupervisedTrainer`
+extends `GameDataGen` as it also collects data from the play, so to avoid duplication I did
+this inheritance. It modifies `loop`, `event_check` and `bird_update` method to make the 
+bird jump using AI instead of user invoked events.
 
 ------------------------------------------------------------------------------------
 

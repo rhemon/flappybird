@@ -149,13 +149,12 @@ class GeneticBird(Bird):
         else:
             self.genes = Genes()
 
-    def jump(self, state):
+    def jump(self, inp):
         """
-        Use the the state to decide whether to jump or not
+        Use the the input to decide whether to jump or not
         if so invokes jump
         """ 
-
-        inp = [self.X, self.Y, (state[0] - ((self.X+self.X+self.WIDTH) // 2)), (state[1] - ((self.Y+self.Y+self.HEIGHT) // 2))]
+        
         if self.genes.get_decision(np.asarray(inp)):
             super().jump()
     
@@ -166,8 +165,6 @@ class GeneticBird(Bird):
         """
 
         super().set_alive(alive)
-        if alive:
-            self.set_init_pos()
 
     def get_genes(self):
         return self.genes

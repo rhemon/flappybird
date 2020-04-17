@@ -23,6 +23,7 @@ import sys
 
 from core.game import Game
 from genetic.trainer import *
+from supervised.trainer import *
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -57,6 +58,11 @@ if __name__ == "__main__":
             g = GeneticTrainer(size)
 
         g.loop()
-
+    elif runtype == "supervised":
+        gdg = GameDataGen()
+        gdg.loop()
+        X, Y = gdg.get_XY()
+        sg = SupervisedTrainer(X=X, Y=Y)
+        sg.loop()
     else:
         raise  Exception("Unrecognised runtype. Valid optionos: play, genetic")

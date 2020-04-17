@@ -112,7 +112,7 @@ class GeneticTrainer(Game):
                 continue
             count += 1
             self.bird = each
-            self.bird.jump(self.get_state())
+            self.bird.jump(self.bird.get_input(self.get_state()))
             i += 1
             game = super().bird_update() or game
             self.bird.update_fitness_score(self.get_state())
@@ -188,15 +188,6 @@ class GeneticTrainer(Game):
         if not game:
             self.do_selection()
         
-    def reset_obstacles(self):
-        """
-        Reset obstacle for the new generation.
-        """
-
-        self.obstacles = [Obstacle(self.WIDTH, self.HEIGHT)]
-        for i in range(1, 10):
-            self.obstacles.append(Obstacle(self.WIDTH, self.HEIGHT, self.obstacles[i-1]))
-
     def end_game(self):
         """
         Increment the generation count.

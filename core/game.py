@@ -51,6 +51,7 @@ class Game:
         self.font_obj = pygame.font.Font('freesansbold.ttf', 13)
 
         self.jumped = False
+        self.jump_press = False
         # intialise obstacles 
         self.obstacles = [Obstacle(self.WIDTH, self.HEIGHT)]
         for i in range(1, 10):
@@ -69,7 +70,6 @@ class Game:
 
         self.display.blit(text_obj, text_rect)
     
-
     def obstacles_update(self):
         """
         Update obstacle. Make them move.
@@ -95,7 +95,7 @@ class Game:
         Get state. Mainly provides the list for the input
         in training models.
         """
-        
+
         state = []
         for i in range(len(self.obstacles)):
             each = self.obstacles[i]
@@ -167,11 +167,13 @@ class Game:
         """
 
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE and not self.jumped:
-                self.bird.jump()
-                self.jumped = True
+            if event.key == pygame.K_SPACE and not self.jump_press:
+                self.jumped = self.bird.jump()
+                self.jump_press = True
+
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_SPACE:
+                self.jump_press = False
                 self.jumped = False
     
     def end_game(self):
@@ -226,3 +228,13 @@ class Game:
 
         while 1:     
             self.play()
+    
+    def reset_obstacles(self):
+        """
+        Reset obstacles.
+        """
+
+        self.obstacles = [Obstacle(self.WIDTH, self.HEIGHT)]
+        for i in range(1, 10):
+            self.obstacles.append(Obstacle(self.WIDTH, self.HEIGHT, self.obstacles[i-1]))
+

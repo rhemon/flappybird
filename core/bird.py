@@ -39,11 +39,15 @@ class Bird:
         it moves upward.
         """
 
-        if (self.up_X > 0 and self.up_X < self.JUMP_LIMIT):
-            return
+        if (self.in_jump()):
+            return False
         self.up_X = 0
         self.moveBy = -abs(self.moveBy)
+        return True
     
+    def in_jump(self):
+        return self.moveBy < 0
+
     def set_init_pos(self):
         """
         Set to initial position
@@ -103,6 +107,25 @@ class Bird:
             self.moves = 0
             self.score = 0
             self.up_X = 0
+            self.set_init_pos()
 
     def is_alive(self):
         return self.alive
+
+    def __lt__(self, b): 
+        return self.get_score() < b.get_score()
+    
+    def __gt__(self, b):
+        return self.get_score() > b.get_score()
+    
+    def get_input(self, state):
+        """
+        Returns the data for model's input.
+        """
+
+        inp = [self.X, self.Y, (state[0] - ((self.X+self.X+self.WIDTH) // 2)), (state[1] - ((self.Y+self.Y+self.HEIGHT) // 2))]
+        return inp
+
+    def get_UpX(self):
+        return self.up_X
+
