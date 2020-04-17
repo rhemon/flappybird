@@ -97,9 +97,9 @@ play the game.
 *This folder contains extended classes for making the flappy bird AI learn to play
 the game using the concept of supervised machine learning. It uses the same
 neural network model as the genetic algorithm one, but here it tries to collect the
-interaction and train the model to learn to play the game.
+interaction and train the model to learn to play the game.*
 
-It first prompts the user to play the game, where it takes the input set and user's 
+*It first prompts the user to play the game, where it takes the input set and user's 
 action to label X and Y. In a case if user's decision led ot the bird crashing,
 it switches the label in that case.*
 
