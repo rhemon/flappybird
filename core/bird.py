@@ -21,13 +21,14 @@ class Bird:
     WIDTH=10
     HEIGHT=10
     JUMP_LIMIT = 60
+    INIT_MOVE_BY = 7
 
     def __init__(self, pos):
         self.X = pos[0]
         self.Y = pos[1]
         self.rect = Rect(self.X, self.Y, self.WIDTH, self.HEIGHT)
         self.up_X = 0
-        self.moveBy = 7
+        self.moveBy = self.INIT_MOVE_BY
         self.alive = True
         self.score = 0
         self.moves = 0

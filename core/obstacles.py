@@ -39,6 +39,8 @@ class Obstacle:
     MIN_SPACE = 230
     MAX_SPACE = 230
 
+    INITIAL_X_CORD = 400
+
     SPEED = 7
 
     def __init__(self, WIN_WIDTH, WIN_HEIGHT, prev_obs=None):
@@ -50,7 +52,7 @@ class Obstacle:
             prev_X = prev_obs.get_X()
             prev_Y = prev_obs.get_Y_Midpoint()
         else:
-            prev_X = 400
+            prev_X = self.INITIAL_X_CORD
         
         self.WIN_WIDTH = WIN_WIDTH
         self.WIN_HEIGHT = WIN_HEIGHT

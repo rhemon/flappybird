@@ -37,6 +37,8 @@ class Game:
     TEXT_COLOR = BLACK
     OBSTACLE_COLOR = (200, 200, 200)
     BIRD_COLOR = (10, 230, 40)
+
+    INIT_BIRD_POS = (50, 195)
     
     def __init__(self):
         """
@@ -57,7 +59,7 @@ class Game:
         for i in range(1, 10):
             self.obstacles.append(Obstacle(self.WIDTH, self.HEIGHT, self.obstacles[i-1]))
         
-        self.bird = Bird((50, 195))
+        self.bird = Bird(self.INIT_BIRD_POS)
 
     def add_status_label(self, text, y_center):
         """
@@ -191,6 +193,17 @@ class Game:
 
         self.add_status_label("Score: " + str(self.bird.get_score()), 10)
 
+    def game_draw(self):
+        self.event_check()
+        self.display.fill(self.BG_COLOR)
+        self.obstacles_draw()
+        self.bird_draw()
+        self.status_draw()
+        pygame.time.wait(50)
+        pygame.display.update()
+        
+        
+
     def play(self):
         """
         Run the game.
@@ -198,27 +211,18 @@ class Game:
         Used in the loop.
         """
 
-        self.event_check()
-
-        self.display.fill(self.BG_COLOR)
         
+        self.game_draw()
 
         self.obstacles_update()
-        self.obstacles_draw()
-
         game = self.bird_update()
-        self.bird_draw()
-
-        self.status_draw()
             
-        pygame.display.update()
         # pygame.display.flip()
 
         if not game:
             self.end_game()
             
-        pygame.time.wait(50)
-
+        
         return game
     
     def loop(self):
