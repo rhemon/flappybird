@@ -14,6 +14,12 @@ $ python start.py genetic -r
 If you wish to provide your own size 
 $ python start.py genetic -r -s 200
 
+To run the game on supervised mode
+$ python start.py supervised
+
+To run the game learning with qlearning
+$ python start.py qlearn
+
 @author Ridhwanul Haque
 @version 15.04.2020
 """
@@ -23,8 +29,9 @@ import sys
 
 from core.game import Game
 from genetic.trainer import *
-# from supervised.trainer import *
+from supervised.trainer import *
 from qlearning.trainer import *
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -51,23 +58,20 @@ if __name__ == "__main__":
                 sizespecified = True
             elif opt in ('-r', '--resume'):
                 resume = True
-       
         size = int(size)
         if resume:
             g = GeneticTrainer(size, True)
         else:
             g = GeneticTrainer(size)
-
         g.loop()
     elif runtype == "qlearn":
-        g = ReinforcedTrainer()
+        g = ReinforcedTrainer()      
         g.loop()
-    # TEMPORARY COMMENTING BECAUSE KERAS WITH 2.1.0 tensorflow takes too long to import
-    # elif runtype == "supervised":
-    #     gdg = GameDataGen()
-    #     gdg.loop()
-    #     X, Y = gdg.get_XY()
-    #     sg = SupervisedTrainer(X=X, Y=Y)
-    #     sg.loop()
+    elif runtype == "supervised":
+        gdg = GameDataGen()
+        gdg.loop()
+        X, Y = gdg.get_XY()
+        sg = SupervisedTrainer(X=X, Y=Y)
+        sg.loop()
     else:
-        raise  Exception("Unrecognised runtype. Valid optionos: play, genetic")
+        raise  Exception("Unrecognised runtype. Valid optionos: play, genetic, supervised, qlearn")

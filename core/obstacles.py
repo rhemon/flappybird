@@ -39,7 +39,7 @@ class Obstacle:
     MIN_SPACE = 230
     MAX_SPACE = 230
 
-    INITIAL_X_CORD = 400
+    INITIAL_X_CORD = 50
 
     SPEED = 7
 
@@ -84,10 +84,7 @@ class Obstacle:
                 break
         self.init_X = self.X
         
-        # Initial rectangles for obstacle
-        self.r1 = Rect(self.X, 0, self.WIDTH, self.height1)
-        self.r2 = Rect(self.X, self.WIN_HEIGHT-self.height2, self.WIDTH, self.height2)
-
+        
         self.passed = False
 
     def reset_X(self):
@@ -96,9 +93,12 @@ class Obstacle:
         """
 
         self.X = self.init_X
-        self.update_rects()
 
     def get_rects(self):
+        # Initial rectangles for obstacle
+        self.r1 = Rect(self.X, 0, self.WIDTH, self.height1)
+        self.r2 = Rect(self.X, self.WIN_HEIGHT-self.height2, self.WIDTH, self.height2)
+
         return (self.r1, self.r2)
 
     def get_X(self):
@@ -111,27 +111,20 @@ class Obstacle:
         """
         
         self.X -= self.SPEED
-        self.update_rects()
-
-    def update_rects(self):
-        """
-        Reset rect with updated X and Y cords.
-        """
-
-        self.r1 = Rect(self.X, 0, self.WIDTH, self.height1)
-        self.r2 = Rect(self.X, self.WIN_HEIGHT-self.height2, self.WIDTH, self.height2)
 
     def collison_checker(self, x, y, width, height):
         """
         Check if given position with width and height
         collide with the obstacle anywhere.
         If so returns True, otherwise False.
+        Also returns whehter death caused by upper pipe.
         """
-
         if x >= self.X and x <= self.X+self.WIDTH or (x+width) >= self.X and (x+width) <= self.X+self.WIDTH:
-            if (self.height1 >= y or self.WIN_HEIGHT-self.height2 <= y+height):
-                return True
-        return False
+            if self.height1 >= y:
+                return True, True
+            elif self.WIN_HEIGHT-self.height2 <= y+height:
+                return True, False
+        return False, False
     
     def just_passed(self, x):
         """

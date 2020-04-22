@@ -24,7 +24,7 @@ class Game:
     game quits.
     """
 
-    WIDTH = 800
+    WIDTH = 500
     HEIGHT = 400
 
     RED = (255, 0, 0)
@@ -45,12 +45,7 @@ class Game:
         Initialise game objects 
         """
 
-        pygame.init()
-        
-        self.display = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
-        self.display.fill(self.BG_COLOR)
-        
-        self.font_obj = pygame.font.Font('freesansbold.ttf', 13)
+        self.win_init()
 
         self.jumped = False
         self.jump_press = False
@@ -58,8 +53,17 @@ class Game:
         self.obstacles = [Obstacle(self.WIDTH, self.HEIGHT)]
         for i in range(1, 10):
             self.obstacles.append(Obstacle(self.WIDTH, self.HEIGHT, self.obstacles[i-1]))
-        
         self.bird = Bird(self.INIT_BIRD_POS)
+
+    
+    def win_init(self):
+        pygame.init()
+        
+        self.display = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
+        self.display.fill(self.BG_COLOR)
+        
+        self.font_obj = pygame.font.Font('freesansbold.ttf', 13)
+
 
     def add_status_label(self, text, y_center):
         """
@@ -69,7 +73,6 @@ class Game:
         text_obj = self.font_obj.render(text, True, self.TEXT_COLOR)
         text_rect = text_obj.get_rect()
         text_rect.center = (self.WIDTH-90, y_center)
-
         self.display.blit(text_obj, text_rect)
     
     def obstacles_update(self):
@@ -117,30 +120,46 @@ class Game:
         """
         Draw bird rectangle
         """
-
         pygame.draw.rect(self.display, self.BIRD_COLOR, self.bird.get_rect())
+   
+
+    def bird_check(self):
+        """
+        Check if bird is alive after the move.
+        If bird scores returns True,
+        else returns None if alive.
+        If dead returns False, also includes
+        wheheter death was by upper pipe or not.
+        """
+        bx, by, bw, bh = self.bird.get_pos()
+        if by+bh <= 0 or by >= self.HEIGHT:
+            return False, False
+        for each in self.obstacles:
+            collide, upper = each.collison_checker(bx, by, bw, bh)
+            alive = not collide # if collided, its not alive
+            if not alive:
+                return alive, upper
+            if each.just_passed(bx):
+                self.bird.inc_score()
+                return True, False
+        return None, False
+        
 
     def bird_update(self):
         """
         Update bird. Move and if bird dies,
         then return False
         """
-
         game = True
         self.bird.move()
-        bx, by, bw, bh = self.bird.get_pos()
-        if by+bh <= 0 or by >= self.HEIGHT:
-            game = False
-
-        for each in self.obstacles:
-            if each.collison_checker(bx, by, bw, bh):
-                game = False
-            if each.just_passed(bx):
-                self.bird.inc_score()
         
-        if not game:
+        game, _ = self.bird_check()
+        
+        if not game and not game == None:
+
             self.bird.set_alive(False)
-        return game
+
+        return game or game == None
 
     def obstacles_draw(self):
         """
@@ -183,7 +202,7 @@ class Game:
         End and quit game.
         """
 
-        pygame.quit()
+        self.exit_game()
         sys.exit()
 
     def status_draw(self):
@@ -193,52 +212,65 @@ class Game:
 
         self.add_status_label("Score: " + str(self.bird.get_score()), 10)
 
-    def game_draw(self):
+    def extra_draw(self):
+        """
+        Abstract function for subclasses to implement
+        if wants to add anything to the main draw method.
+        Without duplicating game_draw
+        """
+        return
+    
+    def game_draw(self, wait_time=100):
+        """
+        Calls all the draw function for the game.
+        """
         self.event_check()
         self.display.fill(self.BG_COLOR)
         self.obstacles_draw()
         self.bird_draw()
         self.status_draw()
-        pygame.time.wait(50)
+        self.extra_draw()
         pygame.display.update()
-        
+        # print("inside game", wait_time)
+        pygame.time.wait(wait_time)
+
         
 
-    def play(self):
+    def play(self, wait_time=50):
         """
         Run the game.
         Calls all the update and draw method
         Used in the loop.
         """
 
-        
-        self.game_draw()
-
-        self.obstacles_update()
         game = self.bird_update()
-            
-        # pygame.display.flip()
+        self.obstacles_update()
 
-        if not game:
-            self.end_game()
-            
-        
+        self.game_draw(wait_time)
+        # self.game_draw()     
         return game
     
+    def exit_game(self):
+        pygame.font.quit()
+        pygame.quit()
+
     def loop(self):
         """
         Game loop.
         """
 
         while 1:     
-            self.play()
+            game = self.play()
+            if not game and not game == None:
+                self.end_game()
     
     def reset_obstacles(self):
         """
         Reset obstacles.
-        """
+        # """
+        # print("RESET CALLED")
+        # pygame.time.wait("")
 
         self.obstacles = [Obstacle(self.WIDTH, self.HEIGHT)]
         for i in range(1, 10):
             self.obstacles.append(Obstacle(self.WIDTH, self.HEIGHT, self.obstacles[i-1]))
-

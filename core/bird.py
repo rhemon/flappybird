@@ -26,7 +26,6 @@ class Bird:
     def __init__(self, pos):
         self.X = pos[0]
         self.Y = pos[1]
-        self.rect = Rect(self.X, self.Y, self.WIDTH, self.HEIGHT)
         self.up_X = 0
         self.moveBy = self.INIT_MOVE_BY
         self.alive = True
@@ -39,7 +38,6 @@ class Bird:
         Sets moveBy negative so that next time on move
         it moves upward.
         """
-
         if (self.in_jump()):
             return False
         self.up_X = 0
@@ -53,7 +51,6 @@ class Bird:
         """
         Set to initial position
         """
-
         self.X = self.init_pos[0]
         self.Y = self.init_pos[1]
 
@@ -64,23 +61,21 @@ class Bird:
         change as obstacles X move.
         Only Y moves.
         """
-
         self.moves += 1
-        if (self.moveBy < 0 and self.up_X >= self.JUMP_LIMIT):
-            self.moveBy = abs(self.moveBy)
-            self.up_X = 0
-        elif (self.moveBy < 0):
-            self.up_X += abs(self.moveBy)
-        
-        # self.X += abs(self.moveBy)
         self.Y += self.moveBy
-        self.rect = Rect(self.X, self.Y, self.WIDTH, self.HEIGHT)
+
+        if (self.in_jump()):
+            self.up_X += abs(self.moveBy)
+            if self.up_X >= self.JUMP_LIMIT:
+                self.moveBy = abs(self.moveBy)
+                self.up_X = 0
     
     def get_rect(self):
         """
         Return rect object
         """
-
+        
+        self.rect = Rect(self.X, self.Y, self.WIDTH, self.HEIGHT)
         return self.rect
     
     def get_pos(self):

@@ -58,7 +58,7 @@ class GeneticTrainer(Game):
 
         weights = np.load(self.OPT_FILE_PATH)
         w1 = weights['w1']
-        print(w1)
+        # print(w1)
         w2 = weights['w2']
         bias1 = weights['bias1'].item()
         genes = Genes([w1, w2, bias1])
@@ -175,17 +175,18 @@ class GeneticTrainer(Game):
             self.birds[i] = self.birds[-1].offspring(self.birds[ind])
 
         self.reset_obstacles()
-        print("best score", self.best_score)
+        # print("best scor///e", self.best_score)
         
-    def play(self):
+    def play(self, wait_time=50):
         """
         Play a round.
         If all birds die then do selection for new generaiton.
         """
 
-        game = super().play()
+        game = super().play(wait_time)
+        # print(game)
         self.score = sorted(self.birds)[-1].get_score()
-        if not game:
+        if game == False:
             self.do_selection()
         
     def end_game(self):

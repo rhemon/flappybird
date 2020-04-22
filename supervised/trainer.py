@@ -28,11 +28,12 @@ class GameDataGen(Game):
         to jump, so add that to status. If bird is in jump
         and its not already added then add that to the dataset.
         """
-        super().play()
+        game = super().play()
         # so only
         if not self.bird.in_jump() or not self.jump_added:
             self.set_XY()
             jump_added = self.bird.in_jump()
+        return game
 
     def set_XY(self):
         """
@@ -53,8 +54,8 @@ class GameDataGen(Game):
 
     def end_game(self):
         pygame.quit()
-        print(self.X)
-        print(self.Y)
+        # print(self.X)
+        # print(self.Y)
         self.run = False
 
     def temp_screen(self):
@@ -86,7 +87,9 @@ class GameDataGen(Game):
                         self.user_started = True
             
         while self.run:
-            self.play()
+            game = self.play()
+            if game == False:
+                self.end_game()
     
 
 class SupervisedTrainer(GameDataGen):
@@ -170,4 +173,6 @@ class SupervisedTrainer(GameDataGen):
         """
 
         while self.run:
-            self.play()
+            game = self.play()
+            if game == False:
+                self.end_game()
